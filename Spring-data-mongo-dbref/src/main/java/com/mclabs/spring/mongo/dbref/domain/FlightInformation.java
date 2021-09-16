@@ -1,0 +1,113 @@
+package com.mclabs.spring.mongo.dbref.domain;
+
+import java.time.LocalDate;
+import java.util.UUID;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document("flights")
+public class FlightInformation {
+	@Id
+	private String id;
+
+	@Indexed(unique = true)
+	private String internalId;
+
+	// lazy=true: sub-document is loaded when one of its field/method is accessed.
+	// Avoid cyclic dependency
+	/**
+	 * @DbRef - create a document reference.
+	 * 
+	 *        Cascading on save is not available
+	 * 
+	 *        We can hook into Mongo lifecycle events and implement cascading
+	 */
+	@DBRef
+	private Airport departure; // departure Airport
+
+	@DBRef
+	private Airport destination; // destination Airport
+
+	private Aircraft aircraft;
+
+	private FlightType type;
+	private boolean isDelayed;
+	private int durationMin;
+	private LocalDate departureDate;
+
+	public FlightInformation() {
+		this.internalId = UUID.randomUUID().toString();
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public FlightType getType() {
+		return type;
+	}
+
+	public void setType(FlightType type) {
+		this.type = type;
+	}
+
+	public boolean isDelayed() {
+		return isDelayed;
+	}
+
+	public void setDelayed(boolean delayed) {
+		isDelayed = delayed;
+	}
+
+	public int getDurationMin() {
+		return durationMin;
+	}
+
+	public void setDurationMin(int durationMin) {
+		this.durationMin = durationMin;
+	}
+
+	public LocalDate getDepartureDate() {
+		return departureDate;
+	}
+
+	public void setDepartureDate(LocalDate departureDate) {
+		this.departureDate = departureDate;
+	}
+
+	public Aircraft getAircraft() {
+		return aircraft;
+	}
+
+	public void setAircraft(Aircraft aircraft) {
+		this.aircraft = aircraft;
+	}
+
+	public String getInternalId() {
+		return internalId;
+	}
+
+	public Airport getDeparture() {
+		return departure;
+	}
+
+	public void setDeparture(Airport departure) {
+		this.departure = departure;
+	}
+
+	public Airport getDestination() {
+		return destination;
+	}
+
+	public void setDestination(Airport destination) {
+		this.destination = destination;
+	}
+
+}
